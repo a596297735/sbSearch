@@ -1,0 +1,291 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>随便搜索</title>
+    <link rel="icon" href="./serachImg/sblogo.jpg">
+    <style type="text/css">
+    * {
+        padding: 0;
+        margin: 0;
+    }
+
+    html,
+    body {
+        width: 100%;
+        height: 100%;
+        background-color: #000;
+        overflow: hidden;
+    }
+
+    ul {
+        list-style-type: none;
+    }
+
+    #title {
+        position: relative;
+        height: 100px;
+        width: 300px;
+        margin: 150px auto 50px;
+        z-index: 1;
+    }
+
+    #title #logo {
+        float: left;
+        width: 100px;
+        height: 100px;
+    }
+
+    #title #logo a {
+        width: 100px;
+        height: 100px;
+        display: block;
+        border-radius: 50%;
+        background-image: url('./serachImg/sblogo.jpg');
+        background-size: 110px 110px;
+        background-position: -4px -4px;
+    }
+
+    #title h1 {
+        position: absolute;
+        right: 0;
+        width: 200px;
+        height: 100px;
+        line-height: 100px;
+        color: #fff;
+        font-size: 50px;
+    }
+
+    #wrap {
+        position: relative;
+        margin: 0 auto;
+        width: 500px;
+        z-index: 1;
+    }
+
+    #search {
+        position: relative;
+        width: 500px;
+        height: 40px;
+        margin: 0 auto;
+    }
+
+    #search input {
+        position: absolute;
+        width: 400px;
+        height: 40px;
+        outline: 0;
+        border: 0;
+        font-size: 20px;
+        text-indent: 20px;
+    }
+
+    #search button {
+        position: absolute;
+        right: 0;
+        width: 100px;
+        height: 40px;
+        font-size: 20px;
+        color: #FFF;
+        background-color: #38f;
+        border: 0;
+        outline: 0;
+        cursor: pointer;
+    }
+
+    ul {
+        position: absolute;
+        left: 0;
+        width: 400px;
+        height: auto;
+        margin: 0 auto;
+        border-top: 0;
+        color: #fff;
+        font-size: 20px;
+    }
+
+    ul li {
+        text-indent: 20px;
+        cursor: pointer;
+    }
+
+    #canvas {
+        position: absolute;
+        background: black;
+        display: block;
+        top: 0;
+    }
+    </style>
+</head>
+
+<body>
+    <div id="title">
+        <div id="logo">
+            <a href="javascript:;">
+			</a>
+        </div>
+        <h1>随便搜索</h1>
+    </div>
+    <div id="wrap">
+        <div id="search">
+            <input type="text" name="">
+            <button>随便一下</button>
+        </div>
+        <ul>
+        </ul>
+    </div>
+    <script type="text/javascript">
+    window.onload = function() {
+        txt.value = '';
+    }
+    var txt = document.getElementsByTagName('input')[0],
+        btn = document.getElementsByTagName('button')[0],
+        search = document.getElementById('search'),
+        lis = document.getElementsByTagName('li'),
+        ul = document.getElementsByTagName('ul')[0],
+        cont,
+        bool;
+
+    txt.onfocus = function() {
+        ul.style.display = 'block';
+        document.onkeyup = function() {
+            bool = true;
+            cont = txt.value;
+            var script = document.createElement('script');
+            script.src = `https://sp0.baidu.com/5a1Fazu8AA54nxGko9WTAnF6hhy/su?wd=${cont}&cb=fun`;
+            document.body.append(script);
+            script.onload = function() {
+                document.body.removeChild(this);
+            };
+
+        }
+
+    };
+    btn.onclick = function(){ 
+        var val = txt.value;
+        window.location.href = `https://www.baidu.com/s?ie=utf-8&f=8&rsv_bp=1&rsv_idx=2&tn=02003390_2_hao_pg&wd=${val}`;
+    }
+    document.onclick = function(e) {
+        var e = e || window.event;
+        if (e.target.tagName != 'LI' && e.target.tagName != 'INPUT') {
+            ul.style.display = 'none';
+        }
+    }
+
+    function fun(json) {
+        var li = '',
+            obj = json.s;
+        for (var i = 0; i < 5; i++) {
+            if (typeof obj[i] !== 'undefined') {
+                li += `<li>${obj[i]}</li>`;
+            }
+
+        }
+        ul.innerHTML = li;
+        var lis = document.getElementsByTagName('li');
+        for (var i = 0; i < lis.length; i++) {
+            (function(j) {
+                lis[j].keyW = lis[j].innerHTML;
+                lis[j].onclick = function() {
+                    window.location.href = `https://www.baidu.com/s?ie=utf-8&f=8&rsv_bp=1&rsv_idx=2&tn=02003390_2_hao_pg&wd=${lis[j].keyW}`;
+                }
+            }(i));
+        }
+
+        if (ul.innerHTML) {
+            ul.style.border = '1px solid red';
+        } else {
+            ul.style.border = 0;
+        }
+
+    }
+    </script>
+    <canvas id="canvas"></canvas>
+<script>
+        var canvas = document.getElementsByTagName('canvas')[0],
+            can = canvas.getContext('2d'),
+            wX = window.innerWidth,
+            wY = window.innerHeight;
+            canvas.width = wX;
+            canvas.height = wY;
+            canvas.style.backgroundColor = '#000';
+
+            window.onresize = function () {
+            canvas.width = wX;
+            canvas.height = wY;
+            };
+
+function Rain() {};
+Rain.prototype = {
+        /*  雨滴初始状态  */
+        init: function () {
+            this.x = Math.floor(Math.random() * window.innerWidth);
+            this.y = 0;
+            this.rainW = 2;
+            this.rainH = 10;   
+            this.r = 1;
+            this.a = 1;
+            this.vA = 0.96;
+            this.maxR = random(60,80);
+            this.v = random(3,6);   
+            this.h = random(0.8*wY,0.9*wY);
+        },
+        /*  没下落到最大值则画雨滴，否则画圆  */
+        draw: function () {
+            if(this.y < this.h){
+                can.fillStyle = '#3ff';
+                can.fillRect(this.x,this.y,this.rainW,this.rainH);
+            }else{
+                can.beginPath();
+                can.strokeStyle = "rgba(0,255,255,"+this.a+")";
+                can.arc(this.x,this.y,this.r,0,Math.PI*2);
+                can.stroke();                
+            }
+        },
+        /* y没到最大值则y增加，否则半径r则增加 */
+        move:function () {
+            if(this.y < this.h){
+                this.y+=this.v;
+            }else{
+                if(this.r < this.maxR){
+                   this.r++;
+                   this.a *= this.vA
+                }else{
+                    this.init();
+                }
+            }
+                this.draw()
+        }
+    }
+
+    var arr= [];
+    createRain(20);
+    /* 生成雨滴 */
+    function createRain(num) {
+        for(var i = 0; i < num; i++){
+            setTimeout(function () {
+                var rain = new Rain();
+                rain.init();
+                rain.draw();
+                arr.push(rain);
+            },200 * i);
+        }
+    }
+    /* 用一个全屏的遮罩造成雨滴往下运动的效果 */
+     setInterval(function () {
+            can.fillStyle = 'rgba(0,0,0,0.1)';
+            can.fillRect(0, 0,wX,wY);
+            for(var prop in arr){
+                arr[prop].move();
+            }
+    },1000/60);
+
+        /*  返回一个最小值到最大值的随机数  */
+    function random(min,max) {
+        return Math.random()*(max - min) + min;
+    }
+</script>
+</body>
+
+</html>
